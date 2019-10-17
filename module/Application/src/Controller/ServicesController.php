@@ -22,7 +22,7 @@ class ServicesController extends AbstractActionController
         $this->view = new ViewModel();
     }
 
-    public function getRequestDeputadosListAction()
+    public function requestGetDeputadosListAction()
     {
         $header = ['cache-control: no-cache', 'content-type: application/x-www-form-urlencoded'];
 
@@ -37,7 +37,7 @@ class ServicesController extends AbstractActionController
         $arrInfo = json_decode($response, true);
 
         foreach ($arrInfo['list'] as $info):
-            $dados = $this->treatData($info);
+            $dados = $this->treatData('deputados',$info);
             if (is_null($this->deputado->getDeputadosByParam($dados))){
                 $this->deputado->setDeputados($dados);
                 echo $dados['no_deputado']. "inserido com sucesso!'\n";
@@ -48,14 +48,47 @@ class ServicesController extends AbstractActionController
 
         die();
     }
+    public function requestGetVerbaIndenizatoriaAction()
+    {
+        $arrVerbas = [];
+        foreach ($this->deputado->getAllDeputados() as $deputado):
+            $data = $this->getVerbasIndenizatoriasID($deputado['id_deputado']);
+                if(!empty($data)): $arrVerbas = $data; endif;
+            foreach ($arrVerbas as $verba):
+                $data = $this->treatData('verbas',$verba);
+                $this->deputado->setVerbasDeputados($data);
+            endforeach;
+            echo 'sucess<br>';
+        endforeach;
 
-    private function treatData($info){
-        $data = [
-            'id_deputado' => $info['id'],
-            'no_deputado' => $info['nome'],
-            'ds_partido' => $info['partido'],
-            'nu_tag_localizacao' => $info['tagLocalizacao'],
-        ];
+        die();
+    }
+
+    private function getVerbasIndenizatoriasID($id_deputado){
+        $info = file_get_contents("http://dadosabertos.almg.gov.br/ws/prestacao_contas/verbas_indenizatorias/legislatura_atual/deputados/$id_deputado/datas?formato=json");
+        $arrInfo = json_decode($info, true);
+        return $arrInfo['list'];
+    }
+
+    private function treatData($tipo, $info){
+        switch ($tipo){
+            case 'deputados':
+                $data = [
+                    'id_deputado' => $info['id'],
+                    'no_deputado' => $info['nome'],
+                    'ds_partido' => $info['partido'],
+                    'nu_tag_localizacao' => $info['tagLocalizacao'],
+                ];
+                break;
+            case 'verbas':
+                $data = [
+                    'id_verba' => '',
+                    'id_deputado' => $info['idDeputado'],
+                    'dt_referencia' => $info['dataReferencia']['$']
+                ];
+                break;
+        }
+
         return $data;
     }
 }

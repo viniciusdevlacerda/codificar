@@ -24,13 +24,23 @@ return [
                     ],
                 ],
             ],
-            'get-request-deputados-list' => [
+            'request-get-deputados-list' => [
                 'type' => Literal::class,
                 'options' => [
-                    'route'    => '/get/request/deputados/list',
+                    'route'    => '/request/get/deputados/list',
                     'defaults' => [
                         'controller' => Controller\ServicesController::class,
-                        'action'     => 'getRequestDeputadosList',
+                        'action'     => 'requestGetDeputadosList',
+                    ],
+                ],
+            ],
+            'request-get-verbasindenizatorias' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route'    => '/request/get/verbasindenizatorias',
+                    'defaults' => [
+                        'controller' => Controller\ServicesController::class,
+                        'action'     => 'requestGetVerbaIndenizatoria',
                     ],
                 ],
             ],

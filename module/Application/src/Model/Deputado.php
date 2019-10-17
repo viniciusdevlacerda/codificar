@@ -48,10 +48,23 @@ class Deputado extends AbstractTableGateway
             ->order('no_deputado');
         return $this->selectWith($select)->current();
     }
+    public function getVerbasParam($arrParam)
+    {
+        $select = $this->sql
+            ->select()
+            ->from('tb_verbas')
+            ->where($arrParam);
+        return $this->selectWith($select)->toArray();
+    }
 
     public function setDeputados($data)
     {
         $this->table = 'tb_deputados';
+        $this->insertUpdate($this->table, $data);
+    }
+    public function setVerbasDeputados($data)
+    {
+        $this->table = 'tb_verbas';
         $this->insertUpdate($this->table, $data);
     }
 
