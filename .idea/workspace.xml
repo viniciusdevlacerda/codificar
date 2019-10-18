@@ -5,7 +5,11 @@
       <change afterPath="$PROJECT_DIR$/module/Application/src/AbstractClass/WebserviceAbstract.php" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/module/Application/src/WebServices/Almg.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+>>>>>>> 79028e53718445bab4056ec141f0bb74ef5e5a5c
       <change beforePath="$PROJECT_DIR$/module/Application/config/module.config.php" beforeDir="false" afterPath="$PROJECT_DIR$/module/Application/config/module.config.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/module/Application/src/Controller/ServicesController.php" beforeDir="false" afterPath="$PROJECT_DIR$/module/Application/src/Controller/ServicesController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/module/Application/src/Model/Deputado.php" beforeDir="false" afterPath="$PROJECT_DIR$/module/Application/src/Model/Deputado.php" afterDir="false" />

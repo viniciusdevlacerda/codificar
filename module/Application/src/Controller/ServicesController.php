@@ -9,8 +9,8 @@ namespace Application\Controller;
 
 use Application\Model\Deputado;
 use Application\WebServices\Almg;
-use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 class ServicesController extends AbstractActionController
 {
