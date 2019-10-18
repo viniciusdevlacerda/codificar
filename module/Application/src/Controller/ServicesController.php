@@ -9,17 +9,20 @@ namespace Application\Controller;
 
 use Application\Model\Deputado;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 
 class ServicesController extends AbstractActionController
 {
     private $view;
     private $deputado;
+    private static $containerVerbasIndenizatorias;
 
     public function __construct()
     {
         $this->deputado = new Deputado();
         $this->view = new ViewModel();
+        self::$containerVerbasIndenizatorias = new Container('verbasindenizatorias');
     }
 
     public function requestGetDeputadosListAction()
@@ -53,38 +56,52 @@ class ServicesController extends AbstractActionController
         $arrVerbas = [];
         foreach ($this->deputado->getAllDeputados() as $deputado):
             $data = $this->getVerbasIndenizatoriasID($deputado['id_deputado']);
-                if(!empty($data)): $arrVerbas = $data; endif;
-            foreach ($arrVerbas as $verba):
-                $data = $this->treatData('verbas',$verba);
-                $this->deputado->setVerbasDeputados($data);
-            endforeach;
-            echo 'sucess<br>';
+            if(!empty($data)):
+                    $arrVerbas[] = $data;
+            endif;
         endforeach;
-
+        if (!empty($arrVerbas)){
+            foreach ($arrVerbas as $verba):
+                foreach ($verba as $value):
+                    $data = $this->treatData('verbas',$value);
+                    $this->deputado->setVerbasDeputados($data);
+                endforeach;
+            endforeach;
+        }
+        echo 'Verbas indenizatorias atualizadas com sucesso!';
         die();
     }
 
     private function getVerbasIndenizatoriasID($id_deputado){
-        $info = file_get_contents("http://dadosabertos.almg.gov.br/ws/prestacao_contas/verbas_indenizatorias/legislatura_atual/deputados/$id_deputado/datas?formato=json");
-        $arrInfo = json_decode($info, true);
+        $header = ['cache-control: no-cache', 'content-type: application/x-www-form-urlencoded'];
+        $url = "http://dadosabertos.almg.gov.br/ws/prestacao_contas/verbas_indenizatorias/legislatura_atual/deputados/$id_deputado/datas?formato=json";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $arrInfo = json_decode($response, true);
         return $arrInfo['list'];
     }
 
-    private function treatData($tipo, $info){
+    private function treatData($tipo, $dados){
         switch ($tipo){
             case 'deputados':
                 $data = [
-                    'id_deputado' => $info['id'],
-                    'no_deputado' => $info['nome'],
-                    'ds_partido' => $info['partido'],
-                    'nu_tag_localizacao' => $info['tagLocalizacao'],
+                    'id_deputado' => $dados['id'],
+                    'no_deputado' => $dados['nome'],
+                    'ds_partido' => $dados['partido'],
+                    'nu_tag_localizacao' => $dados['tagLocalizacao'],
                 ];
                 break;
             case 'verbas':
                 $data = [
                     'id_verba' => '',
-                    'id_deputado' => $info['idDeputado'],
-                    'dt_referencia' => $info['dataReferencia']['$']
+                    'id_deputado' => $dados['idDeputado'],
+                    'dt_referencia' => $dados['dataReferencia']['$']
                 ];
                 break;
         }
