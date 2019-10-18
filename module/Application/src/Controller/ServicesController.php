@@ -9,7 +9,6 @@ namespace Application\Controller;
 
 use Application\Model\Deputado;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 
 class ServicesController extends AbstractActionController
@@ -22,7 +21,6 @@ class ServicesController extends AbstractActionController
     {
         $this->deputado = new Deputado();
         $this->view = new ViewModel();
-        self::$containerVerbasIndenizatorias = new Container('verbasindenizatorias');
     }
 
     public function requestGetDeputadosListAction()
@@ -43,9 +41,9 @@ class ServicesController extends AbstractActionController
             $dados = $this->treatData('deputados',$info);
             if (is_null($this->deputado->getDeputadosByParam($dados))){
                 $this->deputado->setDeputados($dados);
-                echo $dados['no_deputado']. "inserido com sucesso!'\n";
+                echo $dados['no_deputado']. " inserido com sucesso!<br>";
             }else{
-                echo "Esse deputado já existe na nossa base\n\n";
+                echo "Esse deputado já existe na nossa base<br>";
             }
         endforeach;
 
@@ -72,9 +70,46 @@ class ServicesController extends AbstractActionController
         die();
     }
 
+    public function requestGetVerbaIndenizatoriaMesAction()
+    {
+        $arrVerbasMes = [];
+        foreach ($this->deputado->getAllVerbas() as $verba):
+            $date = explode('-',$verba['dt_referencia']);
+            $data = $this->getVerbasIndenizatoriasMes($verba['id_deputado'],$date[1]);
+            if(!empty($data)):
+                $arrVerbasMes[] = $data;
+            endif;
+        endforeach;
+
+        if (!empty($arrVerbasMes)){
+            foreach ($arrVerbasMes as $verbas):
+                foreach ($verbas as $value):
+                    $data = $this->treatData('verbas_mes',$value);
+                    $this->deputado->setVerbasMesDeputados($data);
+                endforeach;
+            endforeach;
+        }
+        echo 'Verbas indenizatorias atualizadas com sucesso!';
+        die();
+    }
+
     private function getVerbasIndenizatoriasID($id_deputado){
         $header = ['cache-control: no-cache', 'content-type: application/x-www-form-urlencoded'];
         $url = "http://dadosabertos.almg.gov.br/ws/prestacao_contas/verbas_indenizatorias/legislatura_atual/deputados/$id_deputado/datas?formato=json";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $arrInfo = json_decode($response, true);
+        return $arrInfo['list'];
+    }
+
+    private function getVerbasIndenizatoriasMes($id_deputado, $mes){
+        $header = ['cache-control: no-cache', 'content-type: application/x-www-form-urlencoded'];
+        $url = "http://dadosabertos.almg.gov.br/ws/prestacao_contas/verbas_indenizatorias/legislatura_atual/deputados/$id_deputado/2019/$mes?formato=json";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -97,11 +132,22 @@ class ServicesController extends AbstractActionController
                     'nu_tag_localizacao' => $dados['tagLocalizacao'],
                 ];
                 break;
+
             case 'verbas':
                 $data = [
                     'id_verba' => '',
                     'id_deputado' => $dados['idDeputado'],
                     'dt_referencia' => $dados['dataReferencia']['$']
+                ];
+                break;
+
+            case 'verbas_mes':
+                $data = [
+                    'id_deputado' => $dados['idDeputado'],
+                    'dt_referencia' => $dados['dataReferencia']['$'],
+                    'id_tipo_despesa' => $dados['codTipoDespesa'],
+                    'ds_tipo_despesa' => $dados['descTipoDespesa'],
+                    'valor' => $dados['valor'],
                 ];
                 break;
         }

@@ -12,7 +12,6 @@ class Deputado extends AbstractTableGateway
 {
     /** @var String */
     protected $table = "";
-    protected $entidade;
     protected $common;
 
     /**
@@ -26,10 +25,6 @@ class Deputado extends AbstractTableGateway
         $this->common = new CommonFactory();
     }
 
-    /**
-     * @table curso_graduacao
-     * @return Array
-     */
     public function getAllDeputados()
     {
         $select = $this->sql
@@ -57,6 +52,15 @@ class Deputado extends AbstractTableGateway
         return $this->selectWith($select)->toArray();
     }
 
+    public function getAllVerbas()
+    {
+        $select = $this->sql
+            ->select()
+            ->from('tb_verbas')
+            ->order('id_deputado');
+        return $this->selectWith($select)->toArray();
+    }
+
     public function setDeputados($data)
     {
         $this->table = 'tb_deputados';
@@ -65,6 +69,11 @@ class Deputado extends AbstractTableGateway
     public function setVerbasDeputados($data)
     {
         $this->table = 'tb_verbas';
+        $this->insertUpdate($this->table, $data);
+    }
+    public function setVerbasMesDeputados($data)
+    {
+        $this->table = 'tb_verbas_mes';
         $this->insertUpdate($this->table, $data);
     }
 

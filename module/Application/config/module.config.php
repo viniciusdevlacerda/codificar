@@ -44,6 +44,16 @@ return [
                     ],
                 ],
             ],
+            'request-get-verbasindenizatorias-mes' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route'    => '/request/get/verbasindenizatorias/mes',
+                    'defaults' => [
+                        'controller' => Controller\ServicesController::class,
+                        'action'     => 'requestGetVerbaIndenizatoriaMes',
+                    ],
+                ],
+            ],
             'application' => [
                 'type'    => Segment::class,
                 'options' => [

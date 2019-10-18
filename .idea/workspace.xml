@@ -3,13 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="6d559d03-e990-43c3-9dba-4682956e63b2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/modules.config.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/modules.config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/module/Application/src/Controller/IndexController.php" beforeDir="false" afterPath="$PROJECT_DIR$/module/Application/src/Controller/IndexController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/module/Application/config/module.config.php" beforeDir="false" afterPath="$PROJECT_DIR$/module/Application/config/module.config.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/module/Application/src/Controller/ServicesController.php" beforeDir="false" afterPath="$PROJECT_DIR$/module/Application/src/Controller/ServicesController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/module/Application/view/application/index/index.phtml" beforeDir="false" afterPath="$PROJECT_DIR$/module/Application/view/application/index/index.phtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/module/Application/view/layout/layout.phtml" beforeDir="false" afterPath="$PROJECT_DIR$/module/Application/view/layout/layout.phtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/module/Application/src/Model/Deputado.php" beforeDir="false" afterPath="$PROJECT_DIR$/module/Application/src/Model/Deputado.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
