@@ -14,15 +14,15 @@ use Zend\View\Model\ViewModel;
 
 class ServicesController extends AbstractActionController
 {
-    private $view;
-    private $deputado;
     private $almg;
+    private $deputado;
+    private $view;
 
     public function __construct()
     {
+        $this->almg = new Almg();
         $this->deputado = new Deputado();
         $this->view = new ViewModel();
-        $this->almg = new Almg();
     }
 
     public function requestGetDeputadosListAction()
@@ -41,43 +41,31 @@ class ServicesController extends AbstractActionController
     }
     public function requestGetVerbaIndenizatoriaAction()
     {
-        $arrVerbas = [];
         foreach ($this->deputado->getAllDeputados() as $deputado):
-            $data = $this->almg->getVerbasIndenizatoriasDeputado($deputado['id_deputado']);
-            if(!empty($data)):
-                    $arrVerbas[] = $data;
-            endif;
-        endforeach;
-        if (!empty($arrVerbas)){
-            foreach ($arrVerbas as $verba):
-                foreach ($verba as $value):
-                    $data = $this->treatData('verbas',$value);
+            $arrVerbas = $this->almg->getVerbasIndenizatoriasDeputado($deputado['id_deputado']);
+            if(!empty($arrVerbas)):
+                foreach ($arrVerbas as $verba):
+                    $data = $this->treatData('verbas', $verba);
                     $this->deputado->setVerbasDeputados($data);
                 endforeach;
-            endforeach;
-        }
+            endif;
+        endforeach;
         echo 'Verbas indenizatorias atualizadas com sucesso!';
         die();
     }
 
     public function requestGetVerbaIndenizatoriaMesAction()
     {
-        $arrVerbasMes = [];
-        foreach ($this->deputado->getAllVerbas() as $verba):
-            $date = explode('-',$verba['dt_referencia'])[1];#mês de verba indenizatoria por deputado
-            $data = $this->almg->getVerbasIndenizatoriasMes($verba['id_deputado'], $date);
-            if(!empty($data)):
-                $arrVerbasMes[] = $data;
+        foreach ($this->deputado->getAllVerbas() as $deputado):
+            $arrVerbasMes = $this->almg->getVerbasIndenizatoriasMes($deputado['id_deputado'], $deputado['dt_mes_referencia']);
+            if(!empty($arrVerbasMes)):
+                foreach ($arrVerbasMes as $verbaMes):
+                    $dados = $this->treatData('verbas_mes',$verbaMes);
+                    $this->deputado->setVerbasMesDeputados($dados);
+                endforeach;
             endif;
         endforeach;
-        if (!empty($arrVerbasMes)){
-            foreach ($arrVerbasMes as $verbas):
-                foreach ($verbas as $value):
-                    $data = $this->treatData('verbas_mes', $value);
-                    $this->deputado->setVerbasMesDeputados($data);
-                endforeach;
-            endforeach;
-        }
+
         echo 'Verbas indenizatorias atualizadas com sucesso!';
         die();
     }
@@ -99,15 +87,19 @@ class ServicesController extends AbstractActionController
                 $data = [
                     'id_verba' => '',
                     'id_deputado' => $dados['idDeputado'],
-                    'dt_referencia' => $dados['dataReferencia']['$']
+                    'dt_referencia' => $dados['dataReferencia']['$'],
+                    'dt_mes_referencia' => explode('-',$dados['dataReferencia']['$'])[1],
+                    'dt_ano_referencia' => explode('-',$dados['dataReferencia']['$'])[2],
                 ];
                 break;
 
             case 'verbas_mes':
                 $data = [
-                    'id_verbas_mes' => '',
+                    'id_verba_mes' => '',
                     'id_deputado' => $dados['idDeputado'],
                     'dt_referencia' => $dados['dataReferencia']['$'],
+                    'dt_mes_referencia' => explode('-',$dados['dataReferencia']['$'])[1],
+                    'dt_ano_referencia' => explode('-',$dados['dataReferencia']['$'])[2],
                     'id_tipo_despesa' => $dados['codTipoDespesa'],
                     'ds_tipo_despesa' => $dados['descTipoDespesa'],
                     'nu_valor' => $dados['valor'],

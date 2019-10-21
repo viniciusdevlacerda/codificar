@@ -27,11 +27,10 @@ class Almg extends WebserviceAbstract
         $data = $this->request();
         return $data['list'];
     }
-    public function getVerbasIndenizatoriasMes($id_deputado, $mes, $filter = false)
+    public function getVerbasIndenizatoriasMes($id_deputado, $mes)
     {
         $this->url = "prestacao_contas/verbas_indenizatorias/legislatura_atual/deputados/$id_deputado/2019/$mes?formato=json";
         $data = $this->request();
-        var_dump($data);die;
         return $data['list'];
     }
 }

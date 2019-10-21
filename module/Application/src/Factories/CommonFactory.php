@@ -44,7 +44,28 @@ class CommonFactory
         return str_replace($what, $by, $string);
     }
 
-    public static function sg2uf($sg){
+    public function getMeses(){
+        $meses = [
+            'Janeiro' => '01',
+            'Fevereiro' => '02',
+            'Março' => '03',
+            'Abril' => '04',
+            'Maio' => '05',
+            'Junho' => '06',
+            'Julho' => '07',
+            'Agosto' => '08',
+            'Setembro' => '09',
+            'Outubro' => '10',
+            'Novembro' => '11',
+            'Dezembro' => '12',
+        ];
+
+        return $meses;
+    }
+
+
+
+        public static function sg2uf($sg){
         switch ($sg) {
             case 'AC'; $uf = 'Acre'; break;
             case 'AL'; $uf = 'Alagoas'; break;

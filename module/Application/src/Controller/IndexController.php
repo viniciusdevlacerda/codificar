@@ -7,22 +7,35 @@
 
 namespace Application\Controller;
 
+use Application\Factories\CommonFactory;
 use Application\Model\Deputado;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
-    private $view;
+    private $common;
     private $deputado;
     public function __construct()
     {
-        $this->view = new ViewModel();
         $this->deputado = new Deputado();
+        $this->common = new CommonFactory();
     }
 
     public function indexAction()
     {
-        return new ViewModel();
+        $data = [];
+        foreach ($this->common->getMeses() as $mes){
+            $arrVebasMes = $this->deputado->getVerbasByMes($mes);
+            if(!empty($arrVebasMes)){
+                foreach ($arrVebasMes as $key => $verba){
+                    $data[$verba['id_deputado']][$verba['dt_mes_referencia']] = $verba;
+                }
+            }
+        }
+
+        var_dump($data);die;
+
+
     }
 }

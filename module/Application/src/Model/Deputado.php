@@ -52,6 +52,15 @@ class Deputado extends AbstractTableGateway
         return $this->selectWith($select)->toArray();
     }
 
+    public function getVerbasByMes($mes)
+    {
+        $select = $this->sql
+            ->select()
+            ->from('tb_verbas_mes')
+            ->where(['dt_mes_referencia' => $mes]);
+        return $this->selectWith($select)->toArray();
+    }
+
     public function getAllVerbas()
     {
         $select = $this->sql
