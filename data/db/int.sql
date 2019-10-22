@@ -46,8 +46,10 @@ CREATE TABLE `codificar`.`tb_verbas_detalhes`  (
 );
 
 CREATE TABLE `codificar`.`tb_redes_sociais`  (
+  `id_rede` int(11) NOT NULL AUTO_INCREMENT,
   `id_rede_social` int(11),
   `id_deputado` int(11),
   `no_rede_social` text,
-  `ds_url` varchar(255)
+  `ds_url` varchar(255),
+PRIMARY KEY (`id_rede`)
 );
