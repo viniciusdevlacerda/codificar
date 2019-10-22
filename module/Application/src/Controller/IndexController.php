@@ -24,19 +24,9 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
-        $data = [];
-        foreach ($this->deputado->getAllVerbas() as $deputado):
-            $arrVebas = $this->deputado->getVerbasDeputado($deputado['id_deputado'], $deputado['dt_mes_referencia']);
-            if(!empty($arrVebas)){
-                foreach ($arrVebas as $key => $verba){
-                    $data[$verba['id_deputado']][$verba['dt_mes_referencia']][] = $verba;
-                }
-            }
-        endforeach;
-
-            foreach ($data as $value):
-                foreach ($value as $v): var_dump(count($v));die;endforeach;
-            endforeach;
+       $json = array_slice($this->deputado->getNuVerbas(),0,5);
+       echo '<pre>';
+       var_export(json_encode($json));
 
     }
 }

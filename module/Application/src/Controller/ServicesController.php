@@ -7,6 +7,7 @@
 
 namespace Application\Controller;
 
+use Application\Factories\CommonFactory;
 use Application\Model\Deputado;
 use Application\WebServices\Almg;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -16,6 +17,7 @@ class ServicesController extends AbstractActionController
 {
     private $almg;
     private $deputado;
+    private $common;
     private $view;
 
     public function __construct()
@@ -23,6 +25,7 @@ class ServicesController extends AbstractActionController
         $this->almg = new Almg();
         $this->deputado = new Deputado();
         $this->view = new ViewModel();
+        $this->common = new CommonFactory();
     }
 
     public function requestGetDeputadosListAction()
@@ -49,8 +52,8 @@ class ServicesController extends AbstractActionController
             endif;
         endforeach;
         if (!empty($arrVerbas)){
-            foreach ($arrVerbas as $verba):
-                foreach ($verba as $value):
+            foreach ($arrVerbas as $verbas):
+                foreach ($verbas as $value):
                     $data = $this->treatData('verbas', $value);
                     $this->deputado->setVerbasDeputados($data);
                 endforeach;
@@ -63,19 +66,18 @@ class ServicesController extends AbstractActionController
     public function requestGetVerbaIndenizatoriaMesAction()
     {
         $dados = [];
-        foreach ($this->deputado->getAllVerbas() as $deputado):
-            $arrVerbasMes = $this->almg->getVerbasIndenizatoriasMes($deputado['id_deputado'], $deputado['dt_mes_referencia']);
+        foreach ($this->deputado->getAllDeputados() as $deputado):
+            foreach ($this->common->getMeses() as $mes):
+                 $arrVerbasMes = $this->almg->getVerbasIndenizatoriasMes($deputado['id_deputado'], $mes);
+            endforeach;
             if(!empty($arrVerbasMes)):
                 foreach ($arrVerbasMes as $verba):
-                    $dados [] = $verba;
+                    $data = $this->treatData('verbas_mes', $verba);
+                    $this->deputado->setVerbasMesDeputados($data);
                 endforeach;
             endif;
         endforeach;
 
-        foreach ($dados as $value):
-            $data = $this->treatData('verbas_mes', $value);
-            $this->deputado->setVerbasMesDeputados($data);
-        endforeach;
 
         echo 'Verbas indenizatorias por mês atualizadas com sucesso!';
         die();
@@ -83,7 +85,6 @@ class ServicesController extends AbstractActionController
 
     public function requestGetDetalhesVerbasAction()
     {
-        $data = [];
         foreach ($this->deputado->getAllVerbas() as $deputado):
             $arrVerbasMes = $this->almg->getVerbasIndenizatoriasMes($deputado['id_deputado'], $deputado['dt_mes_referencia']);
             if(!empty($arrVerbasMes)):
@@ -101,6 +102,22 @@ class ServicesController extends AbstractActionController
         echo 'Detalhes de Verbas indenizatorias atualizadas com sucesso!';
         die();
     }
+    public function requestGetListaTelefonicaDeputadosAction()
+    {
+        $data = [];
+        foreach ($this->almg->getListaTelefonicaDeputados() as $listaTel):
+            foreach ($listaTel['redesSociais'] as $redeSocial):
+                $data [] = $redeSocial;
+            endforeach;
+            foreach ($data as $value):
+                $dados = $this->treatData('redes_sociais', $value, ['id_deputado'=>$listaTel['id']]);
+                $this->deputado->setRedesSociais($dados);
+            endforeach;
+        endforeach;
+
+        echo 'Redes Sociais atualizadas com sucesso!';
+        die();
+    }
 
     private function campo2banco($field)
     {
@@ -108,7 +125,7 @@ class ServicesController extends AbstractActionController
         return $campo;
     }
 
-    private function treatData($tipo, $dados){
+    private function treatData($tipo, $dados, $param = null){
         switch ($tipo){
             case 'deputados':
 
@@ -123,6 +140,7 @@ class ServicesController extends AbstractActionController
             case 'verbas':
 
                 $data = [
+                    'id_verba' => '',
                     'id_deputado' => $this->campo2banco($dados['idDeputado']),
                     'dt_referencia' => $this->campo2banco($dados['dataReferencia']['$']),
                     'dt_mes_referencia' => $this->campo2banco(explode('-',$dados['dataReferencia']['$'])[1]),
@@ -134,6 +152,7 @@ class ServicesController extends AbstractActionController
             case 'verbas_mes':
 
                 $data = [
+                    'id_verba_mes' => '',
                     'id_deputado' => $this->campo2banco($dados['idDeputado']),
                     'dt_referencia' => $this->campo2banco($dados['dataReferencia']['$']),
                     'dt_mes_referencia' => $this->campo2banco(explode('-',$dados['dataReferencia']['$'])[1]),
@@ -161,8 +180,19 @@ class ServicesController extends AbstractActionController
                     'ds_tipo_despesa' => $this->campo2banco($dados['descTipoDespesa']),
                 ];
                 break;
+
+            case 'redes_sociais':
+                $data = [
+                    'id_rede_social' => $dados['redeSocial']['id'],
+                    'id_deputado' => $this->campo2banco($param['id_deputado']),
+                    'no_rede_social' => $this->campo2banco($dados['redeSocial']['nome']),
+                    'ds_url' => $this->campo2banco($dados['url']),
+                ];
+                break;
         }
 
         return $data;
     }
 }
+
+

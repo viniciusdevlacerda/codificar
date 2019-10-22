@@ -33,4 +33,10 @@ class Almg extends WebserviceAbstract
         $data = $this->request();
         return $data['list'];
     }
+    public function getListaTelefonicaDeputados()
+    {
+        $this->url = "deputados/lista_telefonica?formato=json";
+        $data = $this->request();
+        return $data['list'];
+    }
 }

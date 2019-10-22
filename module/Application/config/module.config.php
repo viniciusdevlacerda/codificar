@@ -64,6 +64,16 @@ return [
                     ],
                 ],
             ],
+            'request-get-lista-telefonica-deputados' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route'    => '/request/get/lista/telefonica/deputados',
+                    'defaults' => [
+                        'controller' => Controller\ServicesController::class,
+                        'action'     => 'requestGetListaTelefonicaDeputados',
+                    ],
+                ],
+            ],
             'application' => [
                 'type'    => Segment::class,
                 'options' => [
