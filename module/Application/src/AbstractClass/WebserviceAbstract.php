@@ -16,11 +16,7 @@ abstract class WebserviceAbstract
             $curl_response = curl_exec($curl);
             curl_close($curl);
 
-            if ($curl_response === false):
-                $err = curl_error($curl);
-                curl_close($curl);
-                throw new Zend_Exception('Erro na chamada do Serviço: ' . $err . '.');
-            endif;
+
 
             $json = json_decode($curl_response, true);
             if (!$json):

@@ -54,6 +54,16 @@ return [
                     ],
                 ],
             ],
+            'request-get-detalhes-verbas' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route'    => '/request/get/detalhes/verbas',
+                    'defaults' => [
+                        'controller' => Controller\ServicesController::class,
+                        'action'     => 'requestGetDetalhesVerbas',
+                    ],
+                ],
+            ],
             'application' => [
                 'type'    => Segment::class,
                 'options' => [

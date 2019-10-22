@@ -43,12 +43,13 @@ class Deputado extends AbstractTableGateway
             ->order('no_deputado');
         return $this->selectWith($select)->current();
     }
-    public function getVerbasParam($arrParam)
+    public function getVerbasDeputado($id_deputado, $mes)
     {
         $select = $this->sql
             ->select()
-            ->from('tb_verbas')
-            ->where($arrParam);
+            ->from('tb_verbas_detalhes')
+            ->where(['id_deputado' => $id_deputado])
+            ->where(['dt_mes_referencia' => $mes]);
         return $this->selectWith($select)->toArray();
     }
 
@@ -63,11 +64,27 @@ class Deputado extends AbstractTableGateway
 
     public function getAllVerbas()
     {
+        $data = [];
         $select = $this->sql
             ->select()
             ->from('tb_verbas')
-            ->order('id_deputado');
-        return $this->selectWith($select)->toArray();
+            ->order('dt_referencia ASC'); var_dump($this->selectWith($select)->toArray() );die;
+        foreach ($this->selectWith($select)->toArray() as $key => $verbas):
+
+            $id_deputado = $verbas['id_deputado'];
+            $mes_referencia = $verbas['dt_mes_referencia'];
+            $select = $this->sql
+                ->select()
+                ->from('tb_verbas_detalhes')
+                ->where(['id_deputado' => $id_deputado])
+                ->where(['dt_mes_referencia' => $mes_referencia]);
+        $arrVerbas = $this->selectWith($select)->count();
+        if (!empty($arrVerbas)){
+            $verbas['nu_total_verbas'] = $arrVerbas;
+        }
+        $data[$key] = $verbas;
+        endforeach;
+        return $data;
     }
 
     public function setDeputados($data)
@@ -83,6 +100,11 @@ class Deputado extends AbstractTableGateway
     public function setVerbasMesDeputados($data)
     {
         $this->table = 'tb_verbas_mes';
+        $this->insertUpdate($this->table, $data);
+    }
+    public function setVerbasDetalhes($data)
+    {
+        $this->table = 'tb_verbas_detalhes';
         $this->insertUpdate($this->table, $data);
     }
 

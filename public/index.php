@@ -2,6 +2,18 @@
 
 use Zend\Mvc\Application;
 use Zend\Stdlib\ArrayUtils;
+function vazio(&$param)
+{
+    if (!isset($param)) return true;
+    if (is_null($param)) return true;
+    if (empty($param)) return true;
+    return false;
+}
+
+function existe(&$param, $false_case)
+{
+    return vazio($param) ? $false_case : $param;
+}
 
 /**
  * This makes our life easier when dealing with paths. Everything is relative
