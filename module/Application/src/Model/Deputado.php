@@ -90,10 +90,27 @@ class Deputado extends AbstractTableGateway
             $arrVerbas = $this->selectWith($select)->toArray();
             if (!empty($arrVerbas)) {
                 $verbas['nu_total_verbas'] = count($arrVerbas);
-                $data[] = $verbas;
+                $data['verbas_deputados'][$verbas['nu_total_verbas']] = $verbas;
             }
         endforeach;
+        krsort($data);
         return $data;
+    }
+
+    public function getRedesSociais()
+    {
+        $data = $arrRedes = [];
+        $select = $this->sql
+            ->select()
+            ->from('tb_redes_sociais');
+        $RedesSociais = $this->selectWith($select)->toArray();
+        foreach ($RedesSociais as $key => $redes):
+            $data[$redes['id_rede_social']][] = $redes;
+        endforeach;
+        foreach($data as $value):
+            $arrRedes['redes_sociais'][] = ['nome_rede_social' => $value[0]['no_rede_social'],'nu_deputados_usuarios'=> count($value)];
+        endforeach;
+        return $arrRedes;
     }
 
     public function setDeputados($data)

@@ -67,10 +67,10 @@ return [
             'request-get-lista-telefonica-deputados' => [
                 'type' => Literal::class,
                 'options' => [
-                    'route'    => '/request/get/lista/telefonica/deputados',
+                    'route'    => '/request/get/redes/sociais/deputados',
                     'defaults' => [
                         'controller' => Controller\ServicesController::class,
-                        'action'     => 'requestGetListaTelefonicaDeputados',
+                        'action'     => 'requestGetRedesSociaisDeputados',
                     ],
                 ],
             ],

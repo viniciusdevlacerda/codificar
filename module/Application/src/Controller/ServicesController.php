@@ -34,12 +34,11 @@ class ServicesController extends AbstractActionController
             $dados = $this->treatData('deputados',$info);
             if (is_null($this->deputado->getDeputadosByParam($dados))){
                 $this->deputado->setDeputados($dados);
-                echo $dados['no_deputado']. " inserido com sucesso!<br>";
             }else{
-                echo "Esse deputado já existe na nossa base<br>";
+                echo "O deputado ". $dados['no_deputado'] ." já existe na nossa base<br>";
             }
         endforeach;
-
+        echo '<a href="/request/get/verbasindenizatorias">Atualizar Verbas Indenizatórias</a>';
         die();
     }
     public function requestGetVerbaIndenizatoriaAction()
@@ -60,6 +59,7 @@ class ServicesController extends AbstractActionController
             endforeach;
         }
         echo 'Verbas indenizatorias atualizadas com sucesso!';
+        echo '<a href="/request/get/verbasindenizatorias/mes">Atualizar Verbas Indenizatórias por Mês</a>';
         die();
     }
 
@@ -77,9 +77,8 @@ class ServicesController extends AbstractActionController
                 endforeach;
             endif;
         endforeach;
-
-
         echo 'Verbas indenizatorias por mês atualizadas com sucesso!';
+        echo '<a href="/request/get/detalhes/verbas">Atualizar Detalhes das Verbas</a>';
         die();
     }
 
@@ -98,24 +97,20 @@ class ServicesController extends AbstractActionController
                 endforeach;
             endif;
         endforeach;
-
         echo 'Detalhes de Verbas indenizatorias atualizadas com sucesso!';
+        echo '<a href="/request/get/redes/sociais/deputados">Atualizar Redes Sociais</a>';
         die();
     }
-    public function requestGetListaTelefonicaDeputadosAction()
+    public function requestGetRedesSociaisDeputadosAction()
     {
-        $data = [];
         foreach ($this->almg->getListaTelefonicaDeputados() as $listaTel):
             foreach ($listaTel['redesSociais'] as $redeSocial):
-                $data [] = $redeSocial;
-            endforeach;
-            foreach ($data as $value):
-                $dados = $this->treatData('redes_sociais', $value, ['id_deputado'=>$listaTel['id']]);
+                $dados = $this->treatData('redes_sociais', $redeSocial, ['id_deputado'=>$listaTel['id']]);
                 $this->deputado->setRedesSociais($dados);
             endforeach;
         endforeach;
-
         echo 'Redes Sociais atualizadas com sucesso!';
+        echo '<a href="/">Mostrar Resultados</a>';
         die();
     }
 
@@ -183,6 +178,7 @@ class ServicesController extends AbstractActionController
 
             case 'redes_sociais':
                 $data = [
+                    'id_rede' => '',
                     'id_rede_social' => $dados['redeSocial']['id'],
                     'id_deputado' => $this->campo2banco($param['id_deputado']),
                     'no_rede_social' => $this->campo2banco($dados['redeSocial']['nome']),

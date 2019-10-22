@@ -24,9 +24,16 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
-       $json = array_slice($this->deputado->getNuVerbas(),0,5);
-       echo '<pre>';
-       var_export(json_encode($json));
+       $jsonNuVerbas = array_slice($this->deputado->getNuVerbas(),0,5);
+       $jsonRedesSociais = $this->deputado->getRedesSociais();
 
+       if (!vazio($jsonNuVerbas)){
+           echo json_encode($jsonNuVerbas) ;
+           echo json_encode($jsonRedesSociais);
+       }else{
+           echo '<a href="/request/get/deputados/list">Atualizar Deputados</a>';
+       }
+
+       die();
     }
 }
