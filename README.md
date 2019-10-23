@@ -67,4 +67,13 @@ Para iniciar a instalação é necessário:
         * host=localhost
         * user=root
         * password=''
-   
+
+### Execução
+	* Executar URL's abaixo em sequêcia:
+		* codificar/request/get/deputados/list
+		* codificar/request/get/verbasindenizatorias
+		* codificar/request/get/verbasindenizatorias/mes
+		* codificar/request/get/detalhes/verbas
+		* codificar/request/get/redes/sociais/deputados
+		* codificar/ (Resposta JSON de Dados de verbas e redes sociais mais utilizados)
+	   
